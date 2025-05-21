@@ -21,6 +21,7 @@ namespace xyber_x1_infer::dcu_driver_module {
 
 class DcuDriverModule : public aimrt::ModuleBase {
  public:
+  void OnInit() override;
   DcuDriverModule() = default;
   ~DcuDriverModule() override = default;
 
@@ -29,6 +30,7 @@ class DcuDriverModule : public aimrt::ModuleBase {
   void Shutdown() override;
 
  private:
+  std::shared_ptr<CurrentProtectorPublisher> current_protector_pub_;
   [[nodiscard]] aimrt::ModuleInfo Info() const override {
     return aimrt::ModuleInfo{.name = "DcuDriverModule"};
   }
@@ -41,6 +43,7 @@ class DcuDriverModule : public aimrt::ModuleBase {
   auto GetLogger() { return core_.GetLogger(); }
 
   void JointCmdCallback(const std::shared_ptr<const my_ros2_proto::msg::JointCommand>& msg);
+  void OnInit(); 
 
  private:
   bool actuator_debug_ = false;
@@ -66,6 +69,8 @@ class DcuDriverModule : public aimrt::ModuleBase {
   YAML::DcuNetworkConfig dcu_network_cfg_;
   TransimissionManager transmission_;
   xyber::XyberControllerPtr xyber_ctrl_;
+
+  std::shared_ptr<CurrentProtectorPublisher> current_protector_pub_; 
 };
 
 }  // namespace xyber_x1_infer::dcu_driver_module

@@ -63,6 +63,16 @@ bool ControlModule::Initialize(aimrt::CoreRef core) {
         controller_map_[controller_name]->Init(iter->second);
       }
 
+      sub_status_ = node_->create_subscription<my_ros2_proto::msg::ActuatorStatus>(
+        "/actuator_status", 10,
+        [this](const my_ros2_proto::msg::ActuatorStatus::SharedPtr msg) {
+          if (msg->is_disabled) {
+            std::cerr << "[CONTROL] Overcurrent detected on actuator: " << msg->name << std::endl;
+            last_disabled_actuator_ = msg->name;
+            state_machine_.SetState("IDLE");
+          }
+        });
+
       // 设置 joint_xxx_index_map_ 的尺度
       for (const auto& joint : cfg_node["joint_list"]) {
         joint_state_index_map_[joint.as<std::string>()] = -1;
@@ -181,6 +191,51 @@ bool ControlModule::MainLoop() {
           cmd_msg.stiffness[index] = tmp_cmd.stiffness[ii];
         }
       }
+
+      // Overcurrent feedback handling is now ROS2-driven, logic moved to driver
+
+      // static std::map<std::string, std::deque<std::pair<std::chrono::steady_clock::time_point, float>>> current_history;
+      // static std::map<std::string, std::chrono::steady_clock::time_point> last_disable_time;
+      // static std::map<std::string, bool> is_disabled;
+
+      // const float CURRENT_THRESHOLD = 5.0f;  // Amps
+      // const std::chrono::milliseconds MONITOR_WINDOW(500);
+      // const float OVERLIMIT_RATIO = 0.9f;    // 90%
+
+      // auto now = std::chrono::steady_clock::now();
+
+      // for (const auto& [name, dcu] : actuator_dcu_map_) {
+      //   float current = dcu->GetEffort(name);
+      //   auto& hist = current_history[name];
+      //   hist.emplace_back(now, current);
+
+      //   // Prune old entries
+      //   while (!hist.empty() && now - hist.front().first > MONITOR_WINDOW)
+      //     hist.pop_front();
+
+      //   // Count how many entries exceed the threshold
+      //   int total = hist.size();
+      //   int over_count = std::count_if(hist.begin(), hist.end(), [](auto& p) {
+      //     return p.second > CURRENT_THRESHOLD;
+      //   });
+
+      //   bool overcurrent_detected = (total >= 5) && ((float)over_count / total >= OVERLIMIT_RATIO);
+
+      //   if (overcurrent_detected && !is_disabled[name]) {
+      //     dcu->DisableActuator(name);
+      //     last_disable_time[name] = now;
+      //     is_disabled[name] = true;
+      //     std::cerr << "[WARN] Overcurrent on actuator " << name << ". Disabled.\n";
+
+      //     // Zero out commands
+      //     int index = joint_cmd_index_map_[name];
+      //     cmd_msg.effort[index] = 0.0;
+      //     cmd_msg.velocity[index] = 0.0;
+      //     cmd_msg.position[index] = 0.0;
+      //     continue;
+      //   }
+      // }
+
       aimrt::channel::Publish<my_ros2_proto::msg::JointCommand>(joint_cmd_pub_, cmd_msg);
     }
     AIMRT_INFO("Exit MainLoop.");

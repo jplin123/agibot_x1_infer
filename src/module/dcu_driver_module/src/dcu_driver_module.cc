@@ -8,6 +8,7 @@
 #include "my_ros2_proto/msg/joy_stick_data.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
+#include "dcu_driver_module/current_protector_publisher.h"
 
 using namespace xyber;
 using namespace std::chrono_literals;
@@ -403,6 +404,10 @@ void DcuDriverModule::PublishLoop() {
       data.state.effort = xyber_ctrl_->GetEffort(name);
       data.state.velocity = xyber_ctrl_->GetVelocity(name);
       data.state.position = xyber_ctrl_->GetPosition(name);
+      if (current_protector_pub_ && current_protector_pub_->Update(name, data.state.effort)) {
+        xyber_ctrl_->DisableActuator(name);  // or RequestState(name, STATE_DISABLE);
+        std::cerr << "[DCU] Disabled actuator " << name << " due to overcurrent.\n";
+      }
     }
     // transmission
     {
@@ -497,6 +502,10 @@ void DcuDriverModule::JointCmdCallback(
     xyber_ctrl_->SetMitCmd(name, data.cmd.position, data.cmd.velocity, data.cmd.effort, data.cmd.kp,
                            data.cmd.kd);
   }
+}
+
+void DcuDriverModule::OnInit() {
+    current_protector_pub_ = std::make_shared<CurrentProtectorPublisher>(GetNode());
 }
 
 }  // namespace xyber_x1_infer::dcu_driver_module

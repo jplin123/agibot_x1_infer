@@ -39,6 +39,7 @@ target_link_directories(
 find_package(std_msgs)
 find_package(sensor_msgs)
 find_package(geometry_msgs)
+find_package(my_ros2_proto REQUIRED)
 target_link_libraries(
   ${CUR_TARGET_NAME}
   PRIVATE yaml-cpp::yaml-cpp

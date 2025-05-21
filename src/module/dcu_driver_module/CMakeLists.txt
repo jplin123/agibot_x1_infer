@@ -10,6 +10,7 @@ find_package(Eigen3 REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(my_ros2_proto REQUIRED)
 
 # Set target name
 set(CUR_TARGET_NAME ${CUR_SUPERIOR_NAMESPACE_UNDERLINE}_${CUR_DIR})
@@ -85,3 +86,5 @@ install(
   DESTINATION ${CMAKE_BINARY_DIR}/cfg/${CUR_DIR}
   USE_SOURCE_PERMISSIONS
 )
+
+ament_export_dependencies(my_ros2_proto)

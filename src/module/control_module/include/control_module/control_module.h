@@ -45,6 +45,10 @@ class ControlModule : public aimrt::ModuleBase {
   int32_t freq_;
   std::atomic_bool run_flag_{true};
   time_point<high_resolution_clock> last_trigger_time_;
+
+private:
+  rclcpp::Subscription<my_ros2_proto::msg::ActuatorStatus>::SharedPtr sub_status_;
+  std::string last_disabled_actuator_;
 };
 
 }  // namespace xyber_x1_infer::rl_control_module
