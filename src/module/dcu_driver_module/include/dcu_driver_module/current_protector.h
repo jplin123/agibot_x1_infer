@@ -14,6 +14,7 @@ public:
   bool Update(const std::string& name, float current);
   bool IsDisabled(const std::string& name) const;
   void Reset(const std::string& name);
+  void LogParams() const;
 
 private:
   struct Entry {

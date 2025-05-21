@@ -2,11 +2,6 @@
 #include <algorithm>
 #include <iostream>
 
-CurrentProtector::CurrentProtector(float threshold, float overlimit_ratio, int window_ms)
-    : threshold_(threshold),
-      overlimit_ratio_(overlimit_ratio),
-      window_(std::chrono::milliseconds(window_ms)) {}
-
 bool CurrentProtector::Update(const std::string& name, float current) {
   auto now = std::chrono::steady_clock::now();
   auto& entry = data_[name];
