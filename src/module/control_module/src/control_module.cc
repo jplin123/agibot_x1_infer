@@ -171,8 +171,8 @@ bool ControlModule::MainLoop() {
       for (const auto& [name, status] : status_snapshot) {
         if (status.is_disabled) {
           if (state_machine_.GetCurrentState() != "IDLE") {
-            std::cerr << "[CONTROL] Overcurrent on " << name
-                      << ", setting system to IDLE\n";
+            std::cerr << "[CONTROL] Overcurrent on [" << name << "] "
+                << "(current = " << status.current << " A), setting system to IDLE\n";
             state_machine_.OnEvent("/idle_mode");
           }
           break;  // Only need to respond to one fault
