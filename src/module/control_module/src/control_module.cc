@@ -166,9 +166,8 @@ bool ControlModule::MainLoop() {
     while (run_flag_) {
       next_iteration_time += period;
       std::this_thread::sleep_until(next_iteration_time);
-
+      
       auto status_snapshot = ActuatorStatusTable::Instance().GetSnapshot();
-
       for (const auto& [name, status] : status_snapshot) {
         if (status.is_disabled) {
           if (state_machine_.GetCurrentState() != "IDLE") {

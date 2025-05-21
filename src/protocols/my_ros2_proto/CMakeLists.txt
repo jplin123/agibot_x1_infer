@@ -24,7 +24,6 @@ rosidl_generate_interfaces(${CUR_TARGET_NAME}
   "msg/JointCommand.msg"
   "msg/JoyStickData.msg"
   "msg/JoyStickState.msg"
-  "msg/ActuatorStatus.msg"
   "srv/MyRosRpc.srv"
   DEPENDENCIES std_msgs)
 # cmake-format: on
@@ -55,5 +54,4 @@ add_ros2_aimrt_rpc_gencode_target_for_one_file(
 add_library(${CUR_TARGET_ALIAS_NAME}_aimrt_rpc_gencode ALIAS ${CUR_TARGET_NAME}_aimrt_rpc_gencode)
 
 ament_export_dependencies(rosidl_default_runtime)
-ament_export_dependencies(std_msgs)
 ament_package()

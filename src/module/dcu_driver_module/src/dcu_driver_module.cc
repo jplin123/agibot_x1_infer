@@ -9,6 +9,7 @@
 #include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "common/actuator_status_table.h"
+#include "dcu_driver_module/current_protector.h"
 
 using namespace xyber;
 using namespace std::chrono_literals;
@@ -403,8 +404,9 @@ void DcuDriverModule::PublishLoop() {
     for (auto& [name, data] : actuator_data_space_) {
       data.state.effort = xyber_ctrl_->GetEffort(name);
 
-      if (current_protector_pub_->Update(name, data.state.effort)) {
+      if (current_protector_.Update(name, data.state.effort)) {
         xyber_ctrl_->DisableActuator(name);
+        std::cerr << "[DCU] Disabled actuator " << name << " due to overcurrent.\n";
         ActuatorStatusTable::Instance().SetStatus(name, true, data.state.effort);
       } else {
         ActuatorStatusTable::Instance().SetStatus(name, false, data.state.effort);

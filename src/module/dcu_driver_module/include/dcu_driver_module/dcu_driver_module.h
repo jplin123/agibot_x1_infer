@@ -16,12 +16,12 @@
 #include "dcu_driver_module/config_parse.h"
 #include "dcu_driver_module/xyber_controller/xyber_api/include/xyber_controller.h"
 #include "my_ros2_proto/msg/joint_command.hpp"
+#include "dcu_driver_module/current_protector.h"
 
 namespace xyber_x1_infer::dcu_driver_module {
 
 class DcuDriverModule : public aimrt::ModuleBase {
  public:
-  void OnInit() override;
   DcuDriverModule() = default;
   ~DcuDriverModule() override = default;
 
@@ -30,7 +30,6 @@ class DcuDriverModule : public aimrt::ModuleBase {
   void Shutdown() override;
 
  private:
-  std::shared_ptr<CurrentProtectorPublisher> current_protector_pub_;
   [[nodiscard]] aimrt::ModuleInfo Info() const override {
     return aimrt::ModuleInfo{.name = "DcuDriverModule"};
   }
@@ -43,7 +42,6 @@ class DcuDriverModule : public aimrt::ModuleBase {
   auto GetLogger() { return core_.GetLogger(); }
 
   void JointCmdCallback(const std::shared_ptr<const my_ros2_proto::msg::JointCommand>& msg);
-  void OnInit(); 
 
  private:
   bool actuator_debug_ = false;
@@ -70,7 +68,8 @@ class DcuDriverModule : public aimrt::ModuleBase {
   TransimissionManager transmission_;
   xyber::XyberControllerPtr xyber_ctrl_;
 
-  std::shared_ptr<CurrentProtectorPublisher> current_protector_pub_; 
+ private:
+  CurrentProtector current_protector_{5.0f, 0.9f, 500};  // Example config
 };
 
 }  // namespace xyber_x1_infer::dcu_driver_module
