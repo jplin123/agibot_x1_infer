@@ -63,7 +63,7 @@ target_link_libraries(
          geometry_msgs::geometry_msgs__rosidl_typesupport_fastrtps_cpp
          geometry_msgs::geometry_msgs__rosidl_typesupport_introspection_cpp
          onnxruntime
-         common_common
+         common::common
          ruckig)
 
 # Set test of target
