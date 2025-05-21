@@ -173,7 +173,7 @@ bool ControlModule::MainLoop() {
           if (state_machine_.GetCurrentState() != "IDLE") {
             std::cerr << "[CONTROL] Overcurrent on " << name
                       << ", setting system to IDLE\n";
-            state_machine_.SetState("IDLE");
+            state_machine_.OnEvent("/idle_mode");
           }
           break;  // Only need to respond to one fault
         }
