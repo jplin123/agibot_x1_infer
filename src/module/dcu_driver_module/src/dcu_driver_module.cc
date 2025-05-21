@@ -406,7 +406,6 @@ void DcuDriverModule::PublishLoop() {
 
       if (current_protector_.Update(name, data.state.effort)) {
         xyber_ctrl_->DisableActuator(name);
-        std::cerr << "[DCU] Disabled actuator " << name << " due to overcurrent.\n";
         ActuatorStatusTable::Instance().SetStatus(name, true, data.state.effort);
       } else {
         ActuatorStatusTable::Instance().SetStatus(name, false, data.state.effort);

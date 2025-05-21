@@ -12,11 +12,11 @@ add_subdirectory(protocols/my_ros2_proto)
 add_subdirectory(protocols/example_proto)
 
 # module
+add_subdirectory(module/common)
 add_subdirectory(module/dcu_driver_module)
 add_subdirectory(module/joy_stick_module)
 add_subdirectory(module/control_module)
 add_subdirectory(module/sim_module)
-add_subdirectory(module/common)
 
 # pkg
 add_subdirectory(pkg/pkg1)
