@@ -37,6 +37,7 @@ target_include_directories(
   ${CUR_TARGET_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../common/include>
 )
 
 # Set link libraries of target
@@ -66,6 +67,7 @@ target_link_libraries(
          geometry_msgs::geometry_msgs__rosidl_typesupport_cpp
          geometry_msgs::geometry_msgs__rosidl_typesupport_fastrtps_cpp
          geometry_msgs::geometry_msgs__rosidl_typesupport_introspection_cpp
+         common_common
 )
 
 # Set test of target
