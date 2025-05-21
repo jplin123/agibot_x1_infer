@@ -2,6 +2,11 @@
 #include <algorithm>
 #include <iostream>
 
+CurrentProtector::CurrentProtector(float threshold, float overlimit_ratio, int window_ms)
+    : threshold_(threshold),
+      overlimit_ratio_(overlimit_ratio),
+      window_(std::chrono::milliseconds(window_ms)) {}
+
 bool CurrentProtector::Update(const std::string& name, float current) {
   auto now = std::chrono::steady_clock::now();
   auto& entry = data_[name];
@@ -33,4 +38,12 @@ bool CurrentProtector::IsDisabled(const std::string& name) const {
 
 void CurrentProtector::Reset(const std::string& name) {
   data_.erase(name);
+}
+
+void CurrentProtector::LogParams() const {
+  std::cerr << std::boolalpha;  // Ensure booleans print as true/false
+  std::cerr << "[INIT] CurrentProtector config:"
+            << " threshold = " << threshold_ << " A, "
+            << " overlimit ratio = " << overlimit_ratio_ * 100 << "%, "
+            << " window = " << window_.count() << " ms\n";
 }

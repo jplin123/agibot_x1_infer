@@ -55,6 +55,8 @@ bool DcuDriverModule::Initialize(aimrt::CoreRef core) {
     aimrt::channel::Subscribe<my_ros2_proto::msg::JointCommand>(
         sub_joint_cmd_, std::bind(&DcuDriverModule::JointCmdCallback, this, std::placeholders::_1));
 
+    current_protector_.LogParams();
+
     AIMRT_INFO("Init succeeded.");
   } catch (const std::exception& e) {
     AIMRT_ERROR("Init failed, {}", e.what());
