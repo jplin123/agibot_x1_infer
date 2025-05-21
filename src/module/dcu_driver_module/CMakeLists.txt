@@ -66,7 +66,7 @@ target_link_libraries(
          geometry_msgs::geometry_msgs__rosidl_typesupport_cpp
          geometry_msgs::geometry_msgs__rosidl_typesupport_fastrtps_cpp
          geometry_msgs::geometry_msgs__rosidl_typesupport_introspection_cpp
-         common_common 
+         common::common 
 )
 
 # Set test of target
